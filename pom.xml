@@ -11,7 +11,7 @@
 	<groupId>com.sudhirt.practice</groupId>
 	<artifactId>simple-kanban</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>demo</name>
+	<name>Simple Kanban</name>
 	<description>REST API for simple kanban board</description>
 
 	<properties>
