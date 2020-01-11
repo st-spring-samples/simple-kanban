@@ -2,7 +2,6 @@ package com.sudhirt.practice.easykanban.service;
 
 import java.util.Optional;
 
-import com.sudhirt.practice.easykanban.entity.Swimlane;
 import com.sudhirt.practice.easykanban.entity.Task;
 import com.sudhirt.practice.easykanban.exception.ResourceAlreadyExistsException;
 import com.sudhirt.practice.easykanban.exception.ResourceNotFoundException;
@@ -24,8 +23,8 @@ public class TaskService {
 		if (task == null) {
 			throw new IllegalArgumentException("Invalid argument 'null' provided.");
 		}
-		Optional<Swimlane> swimlaneHolder = swimlaneService.get(swimlaneId);
-		Swimlane swimlane = swimlaneHolder.orElseThrow(() -> new ResourceNotFoundException("Swimlane", swimlaneId));
+		var swimlaneHolder = swimlaneService.get(swimlaneId);
+		var swimlane = swimlaneHolder.orElseThrow(() -> new ResourceNotFoundException("Swimlane", swimlaneId));
 		task.setStatus("OPEN");
 		taskRepository.findByNameAndStatusAndSwimlaneId(task.getName(), task.getStatus(), swimlaneId).ifPresent(b -> {
 			throw new ResourceAlreadyExistsException("Task", "name", task.getName());
@@ -35,7 +34,7 @@ public class TaskService {
 	}
 
 	public Task update(Task task) {
-		Task dbTask = get(task.getId()).orElseThrow(() -> new ResourceNotFoundException("Task", task.getId()));
+		var dbTask = get(task.getId()).orElseThrow(() -> new ResourceNotFoundException("Task", task.getId()));
 		dbTask.setName(task.getName() == null ? dbTask.getName() : task.getName());
 		dbTask.setDescription(task.getDescription() == null ? dbTask.getDescription() : task.getDescription());
 		dbTask.setTargetDate(task.getTargetDate() == null ? dbTask.getTargetDate() : task.getTargetDate());

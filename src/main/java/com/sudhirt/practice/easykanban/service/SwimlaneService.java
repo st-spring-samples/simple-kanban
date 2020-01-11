@@ -4,7 +4,6 @@ import java.util.Optional;
 
 import javax.transaction.Transactional;
 
-import com.sudhirt.practice.easykanban.entity.Board;
 import com.sudhirt.practice.easykanban.entity.Swimlane;
 import com.sudhirt.practice.easykanban.exception.ResourceAlreadyExistsException;
 import com.sudhirt.practice.easykanban.exception.ResourceNotFoundException;
@@ -27,8 +26,8 @@ public class SwimlaneService {
 		if (swimlane == null) {
 			throw new IllegalArgumentException("Invalid argument 'null' provided.");
 		}
-		Optional<Board> boardHolder = boardService.get(boardId);
-		Board board = boardHolder.orElseThrow(() -> new ResourceNotFoundException("Board", boardId));
+		var boardHolder = boardService.get(boardId);
+		var board = boardHolder.orElseThrow(() -> new ResourceNotFoundException("Board", boardId));
 		board.add(swimlane);
 		swimlaneRepository.findByBoardIdAndName(boardId, swimlane.getName()).ifPresent(b -> {
 			throw new ResourceAlreadyExistsException("Swimlane", "name", swimlane.getName());

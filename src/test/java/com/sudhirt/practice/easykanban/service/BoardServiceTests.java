@@ -3,8 +3,6 @@ package com.sudhirt.practice.easykanban.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
-import java.util.Optional;
-
 import javax.transaction.Transactional;
 
 import com.sudhirt.practice.easykanban.entity.Board;
@@ -29,9 +27,9 @@ public class BoardServiceTests {
 
 	@Test
 	public void should_throw_conflict_exception_while_creating_board_with_duplicate_name() {
-		Board board = Board.builder().id(1l).name("Board 1").build();
+		var board = Board.builder().id(1l).name("Board 1").build();
 		boardService.create(board);
-		Board anotherBoard = Board.builder().id(2l).name("Board 1").build();
+		var anotherBoard = Board.builder().id(2l).name("Board 1").build();
 		assertThatExceptionOfType(ResourceAlreadyExistsException.class)
 				.isThrownBy(() -> boardService.create(anotherBoard))
 				.withMessage("Board with 'name' - 'Board 1' already exists");
@@ -39,8 +37,8 @@ public class BoardServiceTests {
 
 	@Test
 	public void should_create_book_successfully() {
-		Board board = Board.builder().id(1l).name("Board 1").build();
-		Board createdBoard = boardService.create(board);
+		var board = Board.builder().id(1l).name("Board 1").build();
+		var createdBoard = boardService.create(board);
 		assertThat(boardService.get(createdBoard.getId())).isNotEmpty();
 	}
 
@@ -51,12 +49,12 @@ public class BoardServiceTests {
 
 	@Test
 	public void get_should_return_matching_board_with_provided_id() {
-		Board board = Board.builder().id(1l).name("Board 1").build();
+		var board = Board.builder().id(1l).name("Board 1").build();
 		boardService.create(board);
-		Optional<Board> dbBoard = boardService.get(1l);
-		assertThat(dbBoard).isNotEmpty();
-		assertThat(dbBoard.get().getId()).isEqualTo(board.getId());
-		assertThat(dbBoard.get().getName()).isEqualTo(board.getName());
+		var dbBoardOptional = boardService.get(1l);
+		assertThat(dbBoardOptional).isNotEmpty();
+		assertThat(dbBoardOptional.get().getId()).isEqualTo(board.getId());
+		assertThat(dbBoardOptional.get().getName()).isEqualTo(board.getName());
 	}
 
 }
