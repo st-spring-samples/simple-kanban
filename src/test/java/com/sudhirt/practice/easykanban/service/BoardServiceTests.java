@@ -32,7 +32,8 @@ public class BoardServiceTests {
 		Board board = Board.builder().id(1l).name("Board 1").build();
 		boardService.create(board);
 		Board anotherBoard = Board.builder().id(2l).name("Board 1").build();
-		assertThatExceptionOfType(ResourceAlreadyExistsException.class).isThrownBy(() -> boardService.create(anotherBoard))
+		assertThatExceptionOfType(ResourceAlreadyExistsException.class)
+				.isThrownBy(() -> boardService.create(anotherBoard))
 				.withMessage("Board with 'name' - 'Board 1' already exists");
 	}
 

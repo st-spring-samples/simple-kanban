@@ -16,27 +16,28 @@ import org.springframework.stereotype.Service;
 @Service
 public class SwimlaneService {
 
-    @Autowired
-    private SwimlaneRepository swimlaneRepository;
+	@Autowired
+	private SwimlaneRepository swimlaneRepository;
 
-    @Autowired
-    private BoardService boardService;
+	@Autowired
+	private BoardService boardService;
 
-    @Transactional
-    public Swimlane create(Swimlane swimlane, long boardId) {
-        if (swimlane == null) {
+	@Transactional
+	public Swimlane create(Swimlane swimlane, long boardId) {
+		if (swimlane == null) {
 			throw new IllegalArgumentException("Invalid argument 'null' provided.");
-        }
-        swimlaneRepository.findByBoardIdAndName(boardId, swimlane.getName()).ifPresent(b -> {
+		}
+		swimlaneRepository.findByBoardIdAndName(boardId, swimlane.getName()).ifPresent(b -> {
 			throw new ResourceAlreadyExistsException("Swimlane", "name", swimlane.getName());
 		});
-        Optional<Board> boardHolder = boardService.get(boardId);
-        Board board = boardHolder.orElseThrow(() -> new ResourceNotFoundException("Board", boardId));
-        board.add(swimlane);
-        return swimlaneRepository.save(swimlane);
-    }
+		Optional<Board> boardHolder = boardService.get(boardId);
+		Board board = boardHolder.orElseThrow(() -> new ResourceNotFoundException("Board", boardId));
+		board.add(swimlane);
+		return swimlaneRepository.save(swimlane);
+	}
 
-    public Optional<Swimlane> get(long id) {
+	public Optional<Swimlane> get(long id) {
 		return swimlaneRepository.findById(id);
 	}
+
 }

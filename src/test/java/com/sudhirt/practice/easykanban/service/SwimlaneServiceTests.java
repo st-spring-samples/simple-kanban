@@ -19,61 +19,64 @@ import org.springframework.boot.test.context.SpringBootTest;
 @Transactional
 public class SwimlaneServiceTests {
 
-    @Autowired
-    private SwimlaneService swimlaneService;
+	@Autowired
+	private SwimlaneService swimlaneService;
 
-    @Autowired
-    private BoardService boardService;
+	@Autowired
+	private BoardService boardService;
 
-    @Test
-    public void should_throw_IllegalArgumentException_while_creating_swimlane_with_null_parameter() {
-        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> swimlaneService.create(null, 100l))
+	@Test
+	public void should_throw_IllegalArgumentException_while_creating_swimlane_with_null_parameter() {
+		assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> swimlaneService.create(null, 100l))
 				.withMessage("Invalid argument 'null' provided.");
-    }
-
-    @Test
-    public void create_should_throw_ResourceNotFoundException_when_board_with_provided_id_not_found() {
-        Swimlane swimlane = new Swimlane();
-        assertThatExceptionOfType(ResourceNotFoundException.class).isThrownBy(() -> swimlaneService.create(swimlane, 100l))
-				.withMessage("Board with identifier '100' not found");
-    }
-
-    @Test
-    public void should_create_swimlane_successfully() {
-        Swimlane swimlane = Swimlane.builder().id(1l).name("Swimlane 1").build();
-        Swimlane createdSwimlane = swimlaneService.create(swimlane, createBoard().getId());
-        assertThat(swimlaneService.get(createdSwimlane.getId())).isNotEmpty();
-    }
-
-    @Test
-	public void should_throw_ResourceAlreadyExistsException_while_creating_swimlane_with_duplicate_name() {
-		Board board = createBoard();
-        Swimlane swimlane1 = Swimlane.builder().id(1l).name("Swimlane 1").build();
-        swimlaneService.create(swimlane1, board.getId());
-        Swimlane swimlane2 = Swimlane.builder().id(1l).name("Swimlane 1").build();
-		assertThatExceptionOfType(ResourceAlreadyExistsException.class).isThrownBy(() -> swimlaneService.create(swimlane2, board.getId()))
-				.withMessage("Swimlane with 'name' - 'Swimlane 1' already exists");
-    }
-    
-    @Test
-	public void should_create_swimlane_with_same_name_in_another_board() {
-		Board board = createBoard();
-        Swimlane swimlane1 = Swimlane.builder().id(1l).name("Swimlane 1").build();
-        swimlaneService.create(swimlane1, board.getId());
-        Board board2 = createBoard(2l, "Board 2");
-        Swimlane swimlane2 = Swimlane.builder().id(2l).name("Swimlane 1").build();
-        assertThatCode(() -> {
-            swimlaneService.create(swimlane2, board2.getId());
-        }).doesNotThrowAnyException();
-        assertThat(swimlaneService.get(2l)).isNotEmpty();
 	}
 
-    private Board createBoard() {
-		return createBoard(1l, "Board 1");
-    }
+	@Test
+	public void create_should_throw_ResourceNotFoundException_when_board_with_provided_id_not_found() {
+		Swimlane swimlane = new Swimlane();
+		assertThatExceptionOfType(ResourceNotFoundException.class)
+				.isThrownBy(() -> swimlaneService.create(swimlane, 100l))
+				.withMessage("Board with identifier '100' not found");
+	}
 
-    private Board createBoard(long id, String name) {
-        Board board = Board.builder().id(id).name(name).build();
+	@Test
+	public void should_create_swimlane_successfully() {
+		Swimlane swimlane = Swimlane.builder().id(1l).name("Swimlane 1").build();
+		Swimlane createdSwimlane = swimlaneService.create(swimlane, createBoard().getId());
+		assertThat(swimlaneService.get(createdSwimlane.getId())).isNotEmpty();
+	}
+
+	@Test
+	public void should_throw_ResourceAlreadyExistsException_while_creating_swimlane_with_duplicate_name() {
+		Board board = createBoard();
+		Swimlane swimlane1 = Swimlane.builder().id(1l).name("Swimlane 1").build();
+		swimlaneService.create(swimlane1, board.getId());
+		Swimlane swimlane2 = Swimlane.builder().id(1l).name("Swimlane 1").build();
+		assertThatExceptionOfType(ResourceAlreadyExistsException.class)
+				.isThrownBy(() -> swimlaneService.create(swimlane2, board.getId()))
+				.withMessage("Swimlane with 'name' - 'Swimlane 1' already exists");
+	}
+
+	@Test
+	public void should_create_swimlane_with_same_name_in_another_board() {
+		Board board = createBoard();
+		Swimlane swimlane1 = Swimlane.builder().id(1l).name("Swimlane 1").build();
+		swimlaneService.create(swimlane1, board.getId());
+		Board board2 = createBoard(2l, "Board 2");
+		Swimlane swimlane2 = Swimlane.builder().id(2l).name("Swimlane 1").build();
+		assertThatCode(() -> {
+			swimlaneService.create(swimlane2, board2.getId());
+		}).doesNotThrowAnyException();
+		assertThat(swimlaneService.get(2l)).isNotEmpty();
+	}
+
+	private Board createBoard() {
+		return createBoard(1l, "Board 1");
+	}
+
+	private Board createBoard(long id, String name) {
+		Board board = Board.builder().id(id).name(name).build();
 		return boardService.create(board);
-    }
+	}
+
 }
