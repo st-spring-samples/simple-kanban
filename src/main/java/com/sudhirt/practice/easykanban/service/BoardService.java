@@ -5,12 +5,11 @@ import java.util.Optional;
 import javax.transaction.Transactional;
 
 import com.sudhirt.practice.easykanban.entity.Board;
+import com.sudhirt.practice.easykanban.exception.ResourceAlreadyExistsException;
 import com.sudhirt.practice.easykanban.repository.BoardRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 @Service
 public class BoardService {
@@ -24,7 +23,7 @@ public class BoardService {
 			throw new IllegalArgumentException("Invalid argument 'null' provided.");
 		}
 		boardRepository.findByName(board.getName()).ifPresent(b -> {
-			throw new ResponseStatusException(HttpStatus.CONFLICT, "Board with name '" + board.getName() + "' exists.");
+			throw new ResourceAlreadyExistsException("Board", "name", board.getName());
 		});
 		return boardRepository.save(board);
 	}
