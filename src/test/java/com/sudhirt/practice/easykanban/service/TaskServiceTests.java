@@ -28,20 +28,20 @@ public class TaskServiceTests {
 
 	@Test
 	public void should_throw_IllegalArgumentException_while_creating_task_with_null_parameter() {
-		assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> taskService.create(null, 100l))
+		assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> taskService.create(null, 100L))
 				.withMessage("Invalid argument 'null' provided.");
 	}
 
 	@Test
 	public void create_should_throw_ResourceNotFoundException_when_swimlane_with_provided_id_not_found() {
 		var task = new Task();
-		assertThatExceptionOfType(ResourceNotFoundException.class).isThrownBy(() -> taskService.create(task, 100l))
+		assertThatExceptionOfType(ResourceNotFoundException.class).isThrownBy(() -> taskService.create(task, 100L))
 				.withMessage("Swimlane with identifier '100' not found");
 	}
 
 	@Test
 	public void should_create_task_successfully() {
-		var task = Task.builder().id(1l).name("Task 1").description("Task 1 description")
+		var task = Task.builder().id(1L).name("Task 1").description("Task 1 description")
 				.targetDate(LocalDateTime.of(2020, 12, 31, 23, 59)).build();
 		var createdTask = taskService.create(task, helper.createSwimlane().getId());
 		assertThat(taskService.get(createdTask.getId())).isNotEmpty();
@@ -49,11 +49,11 @@ public class TaskServiceTests {
 
 	@Test
 	public void should_throw_ResourceAlreadyExistsException_while_creating_task_with_duplicate_swimline_name_and_status() {
-		var task = Task.builder().id(1l).name("Task 1").description("Task 1 description")
+		var task = Task.builder().id(1L).name("Task 1").description("Task 1 description")
 				.targetDate(LocalDateTime.of(2020, 12, 31, 23, 59)).build();
 		var swimlane = helper.createSwimlane();
 		taskService.create(task, swimlane.getId());
-		var anotherTask = Task.builder().id(2l).name("Task 1").description("Task 2 description")
+		var anotherTask = Task.builder().id(2L).name("Task 1").description("Task 2 description")
 				.targetDate(LocalDateTime.of(2020, 11, 30, 23, 59)).build();
 		assertThatExceptionOfType(ResourceAlreadyExistsException.class)
 				.isThrownBy(() -> taskService.create(anotherTask, swimlane.getId()))
@@ -62,13 +62,13 @@ public class TaskServiceTests {
 
 	@Test
 	public void should_create_swimlane_with_same_swimline_name_but_different_status() {
-		var task = Task.builder().id(1l).name("Task 1").description("Task 1 description")
+		var task = Task.builder().id(1L).name("Task 1").description("Task 1 description")
 				.targetDate(LocalDateTime.of(2020, 12, 31, 23, 59)).build();
 		var swimlane = helper.createSwimlane();
 		var dbTask = taskService.create(task, swimlane.getId());
 		dbTask.setStatus("IN PROGRESS");
 		dbTask = taskService.update(dbTask);
-		var anotherTask = Task.builder().id(2l).name("Task 1").description("Task 2 description")
+		var anotherTask = Task.builder().id(2L).name("Task 1").description("Task 2 description")
 				.targetDate(LocalDateTime.of(2020, 11, 30, 23, 59)).build();
 		assertThatCode(() -> {
 			taskService.create(anotherTask, swimlane.getId());
@@ -77,12 +77,12 @@ public class TaskServiceTests {
 
 	@Test
 	public void should_create_swimlane_with_same_name_status_but_different_swimline() {
-		var task = Task.builder().id(1l).name("Task 1").description("Task 1 description")
+		var task = Task.builder().id(1L).name("Task 1").description("Task 1 description")
 				.targetDate(LocalDateTime.of(2020, 12, 31, 23, 59)).build();
 		var swimlane = helper.createSwimlane();
 		taskService.create(task, swimlane.getId());
-		var anotherSwimline = helper.createSwimlane(2l, "Swimline 2", 1l, "Board 1");
-		var anotherTask = Task.builder().id(2l).name("Task 1").description("Task 2 description")
+		var anotherSwimline = helper.createSwimlane(2L, "Swimline 2", 1L, "Board 1");
+		var anotherTask = Task.builder().id(2L).name("Task 1").description("Task 2 description")
 				.targetDate(LocalDateTime.of(2020, 11, 30, 23, 59)).build();
 		assertThatCode(() -> {
 			taskService.create(anotherTask, anotherSwimline.getId());
@@ -91,7 +91,7 @@ public class TaskServiceTests {
 
 	@Test
 	public void update_should_throw_ResourceNotFoundException_when_task_does_not_exist() {
-		var task = Task.builder().id(100l).build();
+		var task = Task.builder().id(100L).build();
 		assertThatExceptionOfType(ResourceNotFoundException.class).isThrownBy(() -> taskService.update(task))
 				.withMessage("Task with identifier '100' not found");
 	}

@@ -16,7 +16,7 @@ public class TestHelper {
 	private SwimlaneService swimlaneService;
 
 	public Board createBoard() {
-		return createBoard(1l, "Board 1");
+		return createBoard(1L, "Board 1");
 	}
 
 	public Board createBoard(long id, String name) {
@@ -26,7 +26,7 @@ public class TestHelper {
 	}
 
 	public Swimlane createSwimlane() {
-		return createSwimlane(1l, "Swimlane 1", 1l, "Board 1");
+		return createSwimlane(1L, "Swimlane 1", 1L, "Board 1");
 	}
 
 	public Swimlane createSwimlane(long id, String name, long boardId, String boardName) {

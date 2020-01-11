@@ -27,9 +27,9 @@ public class BoardServiceTests {
 
 	@Test
 	public void should_throw_conflict_exception_while_creating_board_with_duplicate_name() {
-		var board = Board.builder().id(1l).name("Board 1").build();
+		var board = Board.builder().id(1L).name("Board 1").build();
 		boardService.create(board);
-		var anotherBoard = Board.builder().id(2l).name("Board 1").build();
+		var anotherBoard = Board.builder().id(2L).name("Board 1").build();
 		assertThatExceptionOfType(ResourceAlreadyExistsException.class)
 				.isThrownBy(() -> boardService.create(anotherBoard))
 				.withMessage("Board with 'name' - 'Board 1' already exists");
@@ -37,21 +37,21 @@ public class BoardServiceTests {
 
 	@Test
 	public void should_create_book_successfully() {
-		var board = Board.builder().id(1l).name("Board 1").build();
+		var board = Board.builder().id(1L).name("Board 1").build();
 		var createdBoard = boardService.create(board);
 		assertThat(boardService.get(createdBoard.getId())).isNotEmpty();
 	}
 
 	@Test
 	public void get_should_return_empty_optional_when_board_with_provided_id_is_not_available() {
-		assertThat(boardService.get(100l)).isEmpty();
+		assertThat(boardService.get(100L)).isEmpty();
 	}
 
 	@Test
 	public void get_should_return_matching_board_with_provided_id() {
-		var board = Board.builder().id(1l).name("Board 1").build();
+		var board = Board.builder().id(1L).name("Board 1").build();
 		boardService.create(board);
-		var dbBoardOptional = boardService.get(1l);
+		var dbBoardOptional = boardService.get(1L);
 		assertThat(dbBoardOptional).isNotEmpty();
 		assertThat(dbBoardOptional.get().getId()).isEqualTo(board.getId());
 		assertThat(dbBoardOptional.get().getName()).isEqualTo(board.getName());
