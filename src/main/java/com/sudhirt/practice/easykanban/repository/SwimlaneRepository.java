@@ -10,5 +10,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface SwimlaneRepository extends JpaRepository<Swimlane, Long> {
     
-    Optional<Swimlane> findByName(String name);
+    Optional<Swimlane> findByBoardIdAndName(long boardId, String name);
 }

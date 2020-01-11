@@ -1,6 +1,7 @@
 package com.sudhirt.practice.easykanban.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import javax.transaction.Transactional;
@@ -52,10 +53,27 @@ public class SwimlaneServiceTests {
         Swimlane swimlane2 = Swimlane.builder().id(1l).name("Swimlane 1").build();
 		assertThatExceptionOfType(ResourceAlreadyExistsException.class).isThrownBy(() -> swimlaneService.create(swimlane2, board.getId()))
 				.withMessage("Swimlane with 'name' - 'Swimlane 1' already exists");
+    }
+    
+    @Test
+	public void should_create_swimlane_with_same_name_in_another_board() {
+		Board board = createBoard();
+        Swimlane swimlane1 = Swimlane.builder().id(1l).name("Swimlane 1").build();
+        swimlaneService.create(swimlane1, board.getId());
+        Board board2 = createBoard(2l, "Board 2");
+        Swimlane swimlane2 = Swimlane.builder().id(2l).name("Swimlane 1").build();
+        assertThatCode(() -> {
+            swimlaneService.create(swimlane2, board2.getId());
+        }).doesNotThrowAnyException();
+        assertThat(swimlaneService.get(2l)).isNotEmpty();
 	}
 
     private Board createBoard() {
-        Board board = Board.builder().id(1l).name("Board 1").build();
+		return createBoard(1l, "Board 1");
+    }
+
+    private Board createBoard(long id, String name) {
+        Board board = Board.builder().id(id).name(name).build();
 		return boardService.create(board);
     }
 }
