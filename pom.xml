@@ -9,7 +9,7 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.sudhirt.practice</groupId>
-	<artifactId>easy-kanban</artifactId>
+	<artifactId>simple-kanban</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>demo</name>
 	<description>REST API for simple kanban board</description>
