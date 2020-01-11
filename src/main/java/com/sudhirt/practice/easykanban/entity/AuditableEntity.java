@@ -2,6 +2,7 @@ package com.sudhirt.practice.easykanban.entity;
 
 import java.time.LocalDateTime;
 
+import javax.persistence.Column;
 import javax.persistence.EntityListeners;
 
 import org.springframework.data.annotation.CreatedBy;
@@ -23,12 +24,14 @@ public class AuditableEntity {
 	protected String createdBy;
 
 	@CreatedDate
+	@Column(columnDefinition = "TIMESTAMP")
 	protected LocalDateTime createdAt;
 
 	@LastModifiedBy
 	protected String updatedBy;
 
 	@LastModifiedDate
+	@Column(columnDefinition = "TIMESTAMP")
 	protected LocalDateTime updatedAt;
 
 }

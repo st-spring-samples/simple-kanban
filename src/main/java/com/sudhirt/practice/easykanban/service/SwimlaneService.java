@@ -27,12 +27,12 @@ public class SwimlaneService {
 		if (swimlane == null) {
 			throw new IllegalArgumentException("Invalid argument 'null' provided.");
 		}
-		swimlaneRepository.findByBoardIdAndName(boardId, swimlane.getName()).ifPresent(b -> {
-			throw new ResourceAlreadyExistsException("Swimlane", "name", swimlane.getName());
-		});
 		Optional<Board> boardHolder = boardService.get(boardId);
 		Board board = boardHolder.orElseThrow(() -> new ResourceNotFoundException("Board", boardId));
 		board.add(swimlane);
+		swimlaneRepository.findByBoardIdAndName(boardId, swimlane.getName()).ifPresent(b -> {
+			throw new ResourceAlreadyExistsException("Swimlane", "name", swimlane.getName());
+		});
 		return swimlaneRepository.save(swimlane);
 	}
 
