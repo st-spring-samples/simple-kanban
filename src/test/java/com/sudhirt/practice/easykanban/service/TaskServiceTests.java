@@ -8,8 +8,6 @@ import java.time.LocalDateTime;
 
 import javax.transaction.Transactional;
 
-import com.sudhirt.practice.easykanban.entity.Board;
-import com.sudhirt.practice.easykanban.entity.Swimlane;
 import com.sudhirt.practice.easykanban.entity.Task;
 import com.sudhirt.practice.easykanban.exception.ResourceAlreadyExistsException;
 import com.sudhirt.practice.easykanban.exception.ResourceNotFoundException;
@@ -26,10 +24,7 @@ public class TaskServiceTests {
 	private TaskService taskService;
 
 	@Autowired
-	private SwimlaneService swimlaneService;
-
-	@Autowired
-	private BoardService boardService;
+	private TestHelper helper;
 
 	@Test
 	public void should_throw_IllegalArgumentException_while_creating_task_with_null_parameter() {
@@ -48,7 +43,7 @@ public class TaskServiceTests {
 	public void should_create_task_successfully() {
 		var task = Task.builder().id(1l).name("Task 1").description("Task 1 description")
 				.targetDate(LocalDateTime.of(2020, 12, 31, 23, 59)).build();
-		var createdTask = taskService.create(task, createSwimlane().getId());
+		var createdTask = taskService.create(task, helper.createSwimlane().getId());
 		assertThat(taskService.get(createdTask.getId())).isNotEmpty();
 	}
 
@@ -56,7 +51,7 @@ public class TaskServiceTests {
 	public void should_throw_ResourceAlreadyExistsException_while_creating_task_with_duplicate_swimline_name_and_status() {
 		var task = Task.builder().id(1l).name("Task 1").description("Task 1 description")
 				.targetDate(LocalDateTime.of(2020, 12, 31, 23, 59)).build();
-		var swimlane = createSwimlane();
+		var swimlane = helper.createSwimlane();
 		taskService.create(task, swimlane.getId());
 		var anotherTask = Task.builder().id(2l).name("Task 1").description("Task 2 description")
 				.targetDate(LocalDateTime.of(2020, 11, 30, 23, 59)).build();
@@ -69,7 +64,7 @@ public class TaskServiceTests {
 	public void should_create_swimlane_with_same_swimline_name_but_different_status() {
 		var task = Task.builder().id(1l).name("Task 1").description("Task 1 description")
 				.targetDate(LocalDateTime.of(2020, 12, 31, 23, 59)).build();
-		var swimlane = createSwimlane();
+		var swimlane = helper.createSwimlane();
 		var dbTask = taskService.create(task, swimlane.getId());
 		dbTask.setStatus("IN PROGRESS");
 		dbTask = taskService.update(dbTask);
@@ -84,9 +79,9 @@ public class TaskServiceTests {
 	public void should_create_swimlane_with_same_name_status_but_different_swimline() {
 		var task = Task.builder().id(1l).name("Task 1").description("Task 1 description")
 				.targetDate(LocalDateTime.of(2020, 12, 31, 23, 59)).build();
-		var swimlane = createSwimlane();
+		var swimlane = helper.createSwimlane();
 		taskService.create(task, swimlane.getId());
-		var anotherSwimline = createSwimlane(2l, "Swimline 2", 1l, "Board 1");
+		var anotherSwimline = helper.createSwimlane(2l, "Swimline 2", 1l, "Board 1");
 		var anotherTask = Task.builder().id(2l).name("Task 1").description("Task 2 description")
 				.targetDate(LocalDateTime.of(2020, 11, 30, 23, 59)).build();
 		assertThatCode(() -> {
@@ -94,19 +89,11 @@ public class TaskServiceTests {
 		}).doesNotThrowAnyException();
 	}
 
-	private Swimlane createSwimlane() {
-		return createSwimlane(1l, "Swimlane 1", 1l, "Board 1");
-	}
-
-	private Swimlane createSwimlane(long id, String name, long boardId, String boardName) {
-		createBoard(boardId, boardName);
-		return swimlaneService.create(Swimlane.builder().id(id).name(name).build(), boardId);
-	}
-
-	private Board createBoard(long id, String name) {
-		return boardService.get(id).orElseGet(() -> {
-			return boardService.create(Board.builder().id(id).name(name).build());
-		});
+	@Test
+	public void update_should_throw_ResourceNotFoundException_when_task_does_not_exist() {
+		var task = Task.builder().id(100l).build();
+		assertThatExceptionOfType(ResourceNotFoundException.class).isThrownBy(() -> taskService.update(task))
+				.withMessage("Task with identifier '100' not found");
 	}
 
 }

@@ -39,7 +39,7 @@ public class TaskService {
 		dbTask.setDescription(task.getDescription() == null ? dbTask.getDescription() : task.getDescription());
 		dbTask.setTargetDate(task.getTargetDate() == null ? dbTask.getTargetDate() : task.getTargetDate());
 		dbTask.setStatus(task.getStatus() == null ? dbTask.getStatus() : task.getStatus());
-		return taskRepository.save(task);
+		return taskRepository.save(dbTask);
 	}
 
 	public Optional<Task> get(long id) {

@@ -7,15 +7,9 @@ public class ResourceNotFoundException extends RuntimeException {
 
 	private static final long serialVersionUID = -3882429263802463234L;
 
-	private String type;
+	private final String type;
 
-	private String id;
-
-	public ResourceNotFoundException(String type, String id) {
-		super(type + " with identifier '" + id + "' not found");
-		this.type = type;
-		this.id = id;
-	}
+	private final String id;
 
 	public ResourceNotFoundException(String type, Long id) {
 		super(type + " with identifier '" + id + "' not found");
